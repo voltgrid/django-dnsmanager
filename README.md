@@ -4,6 +4,8 @@ Reusable Django app that provides DNS Zone editing and management.
 
 This is used by [Volt Grid](https://www.voltgrid.com/).
 
+[![Build Status](https://travis-ci.org/voltgrid/django-dnsmanager.svg?branch=master)](https://travis-ci.org/voltgrid/django-dnsmanager)
+
 ## Features
 
 * Import & Export Bind zone files
