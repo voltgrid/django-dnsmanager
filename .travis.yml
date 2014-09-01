@@ -28,7 +28,7 @@ before_script:
   - rm -rf build
 
 script:
-  - coverage run manage.py test
+  - coverage run manage.py test -v 2 dnsmanager
 
 after_success:
   - coveralls --verbose
