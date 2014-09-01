@@ -5,8 +5,6 @@ from django.test import RequestFactory
 
 from model_mommy import mommy
 
-from vg.account.models import Domain
-
 from .models import Zone, AddressRecord, CanonicalNameRecord, MailExchangeRecord, NameServerRecord, TextRecord
 
 from .views import ZoneListView, ZoneDetailView
