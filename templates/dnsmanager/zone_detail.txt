@@ -1,0 +1,36 @@
+$ORIGIN .
+$TTL {{ object.ttl }}
+{{ object.domain }}             IN SOA {% with object.nameserverrecord_set.all|first as soa_ns %}{{ soa_ns.data }}{% endwith %} {{ object.rname }} (
+                                {{ object.serial }} ; serial
+                                {{ object.refresh }} ; refresh
+                                {{ object.retry }} ; retry
+                                {{ object.expire }} ; expire
+                                {{ object.minimum }} ; nxdomain ttl (bind 9+)
+                                )
+
+$ORIGIN {{ object.domain }}.
+
+; NameServerRecords
+{% for object in object.nameserverrecord_set.all %}
+@    {{ object.ttlx }}    IN    NS    {{ object.data }}
+{% endfor %}
+
+; AddressRecords
+{% for object in object.addressrecord_set.all %}
+{{ object.data }}    {{ object.ttlx }}    IN    A    {{ object.ip }}
+{% endfor %}
+
+; CanonicalNameRecord
+{% for object in object.canonicalnamerecord_set.all %}
+{{ object.data }}    {{ object.ttlx }}    IN    CNAME    {{ object.target }}
+{% endfor %}
+
+; MailExchangeRecord
+{% for object in object.mailexchangerecord_set.all %}
+@    {{ object.ttlx }}    IN    MX    {{ object.priority }} {{ object.data }}
+{% endfor %}
+
+; TXT
+{% for object in object.textrecord_set.all %}
+@    {{ object.ttlx }}    IN    TXT    {{ object.text|safe }}
+{% endfor %}

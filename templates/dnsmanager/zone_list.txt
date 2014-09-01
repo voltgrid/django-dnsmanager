@@ -1,0 +1,5 @@
+{% for zone in object_list %}
+{% if zone.is_valid %}
+zone "{{ zone.domain }}" { type master; file "/var/named/masters/{{ zone.domain }}.zone"; };
+{% endif %}
+{% endfor %}

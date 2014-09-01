@@ -1,0 +1,6 @@
+Django
+dnspython
+django-reversion
+
+# Testing / Development
+model-mommy
