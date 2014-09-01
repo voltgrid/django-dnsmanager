@@ -12,6 +12,10 @@ setup(
     url='https://github.com/voltgrid/django-dnsmanager',
     package_dir={'dnsmanager': 'dnsmanager'},
     packages=find_packages(),
+    package_data = {
+        # If any package contains *.txt etc include
+        '': ['*.txt', '*.html', '*.md'],
+    },
     classifiers=['Development Status :: 4 - Beta',
         'Framework :: Django',
         'Intended Audience :: Developers',
