@@ -24,7 +24,7 @@ Set `DNS_MANAGER_DOMAIN_MODEL` in `settings.py`. This must point to a model that
     class Domain(models.Model):
     
         user = models.ForeignKey(User, related_name='domains')
-        name = models.CharField(max_length=253, unique=True, help_text="Virtual Domain")
+        name = models.CharField(max_length=253, unique=True, help_text='Domain Name')
     
         class Meta:
             ordering = ['name']

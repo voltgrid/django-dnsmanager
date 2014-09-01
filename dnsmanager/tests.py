@@ -1,11 +1,10 @@
+from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.models import Permission
 from django.test import TestCase
 from django.test import RequestFactory
 
 from model_mommy import mommy
-
-from vg.account.models import Domain
 
 from .models import Zone, AddressRecord, CanonicalNameRecord, MailExchangeRecord, NameServerRecord, TextRecord
 
@@ -43,8 +42,9 @@ class DNSCreationTest(TestCase):
             "data": "$ORIGIN .\n$TTL 3600\nvaultgrid.com IN SOA ns1.cromova.net. dns-admin (\n 2013120600 ; serial\n 28800 ; refresh\n 7200 ; retry\n 604800 ; expire\n 600 ; nxdomain ttl (bind 9+)\n )\n\n$ORIGIN vaultgrid.com.\n\n; NameServerRecords\n\n@    3600    IN    NS    ns1.cromova.net.\n\n@    3600    IN    NS    ns2.cromova.net.\n\n\n; AddressRecords\n\n@    3600    IN    A    103.245.152.101\n\nwww    3600    IN    A    103.245.152.101\n\n\n; CanonicalNameRecord\n\n\n; MailExchangeRecord\n\n\n; TXT\n",
             "updated": "2013-12-06T04:30:12Z"
         }
-        account = mommy.make_recipe('vg.account.account')
-        domain, created = Domain.objects.get_or_create(name=data['domain'], account=account)
+
+        domain = mommy.make_recipe(settings.DNS_MANAGER_DOMAIN_MODEL.rsplit('.', 1)[0] + '.domain', name=data['domain'])
+
         zone, created = Zone.objects.get_or_create(domain=domain)
         zone.update_from_text(text=data['data'])
 
@@ -124,14 +124,13 @@ class RecipeTest(TestCase):
 class ZoneTest(TestCase):
 
     def setUp(self):
-        self.user = mommy.make_recipe('vg.account.user')
+        self.user = mommy.make_recipe(settings.DNS_MANAGER_DOMAIN_MODEL.rsplit('.', 1)[0] + '.user')
         # grant permission
         permission = Permission.objects.get(codename='view_zones')
         self.user.user_permissions.add(permission)
-        self.account = mommy.make_recipe('vg.account.account', user=self.user)
         # Data
         self.domain_name = 'example.com.au'
-        domain = mommy.make_recipe('vg.account.domain', name=self.domain_name)
+        domain = mommy.make_recipe(settings.DNS_MANAGER_DOMAIN_MODEL.rsplit('.', 1)[0] + '.domain', name=self.domain_name)
         self.obj = mommy.make_recipe('dnsmanager.zone', domain=domain)
         self.factory = RequestFactory()
 

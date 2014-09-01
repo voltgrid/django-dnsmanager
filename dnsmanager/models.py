@@ -62,10 +62,11 @@ def validate_hostname_string(hostname):
     if not all(allowed.match(x) for x in hostname.split(".")):
         raise ValidationError('Hostname is not valid.')
 
-
+from test_app.models import Domain
 class Zone(DateMixin):
 
-    domain = models.ForeignKey(settings.DNS_MANAGER_DOMAIN_MODEL.split('.', 1)[-1], primary_key=True)
+    #domain = models.ForeignKey(settings.DNS_MANAGER_DOMAIN_MODEL.split('.', 1)[-1], primary_key=True)
+    domain = models.ForeignKey(Domain, primary_key=True)
     soa_email = models.CharField(max_length=128, default=ZONE_DEFAULTS['soa'])
     serial = models.PositiveIntegerField(default=0)
     refresh = models.PositiveIntegerField(default=ZONE_DEFAULTS['refresh'])

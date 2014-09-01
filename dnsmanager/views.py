@@ -1,7 +1,7 @@
 from django.views.generic import ListView
 from django.views.generic import DetailView
 
-from models import Zone
+from .models import Zone
 
 
 class ZoneListView(ListView):

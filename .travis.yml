@@ -1,0 +1,36 @@
+language: python
+
+python:
+  - 2.7
+  - 3.2
+  - 3.3
+  - 3.4
+
+env:
+  - DJANGO=Django==1.4.13
+  - DJANGO=Django==1.5.8
+  - DJANGO=Django==1.6.6
+  - DJANGO=git+https://github.com/django/django.git@stable/1.7.x#egg=Django
+
+matrix:
+  exclude:
+    - python: 3.2
+      env: DJANGO=Django==1.4.13
+    - python: 3.3
+      env: DJANGO=Django==1.4.13
+    - python: 2.6
+      env: DJANGO=git+https://github.com/django/django.git@stable/1.7.x#egg=Django
+
+install:
+  - pip install -q $DJANGO
+  - pip install coveralls
+  - python setup.py -q install
+
+before_script:
+  - rm -rf build
+
+script:
+  - coverage run manage.py test
+
+after_success:
+  - coveralls --verbose
