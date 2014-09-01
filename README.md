@@ -20,7 +20,7 @@ This is used by [Volt Grid](https://www.voltgrid.com/).
 
 Install with pip:
 
-	pip install git+git@github.com:voltgrid/django-dnsmanager.git#egg=dnsmanager
+	pip install git+https://github.com/adlibre/django-adlibre.git#egg=django-adlibre
 
 Add to your Django project in your Python path.
 
