@@ -17,6 +17,10 @@ This is used by [Volt Grid](https://www.voltgrid.com/).
 
 ## Installation
 
+Install with pip:
+
+	pip install git+git@github.com:voltgrid/django-dnsmanager.git#egg=dnsmanager
+
 Add to your Django project in your Python path.
 
 Add `dnsmanager` to your `INSTALLED_APPS`.
