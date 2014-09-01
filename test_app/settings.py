@@ -9,7 +9,6 @@ DATABASES = {
 
 INSTALLED_APPS = (
     'django.contrib.auth',
-    'django.contrib.sites',
     'django.contrib.sessions',
     'django.contrib.contenttypes',
     'dnsmanager',
@@ -17,7 +16,6 @@ INSTALLED_APPS = (
 )
 
 SECRET_KEY = '_'
-SITE_ID = 1
 ROOT_URLCONF = 'test_app.urls'
 
 TEMPLATE_LOADERS = (
