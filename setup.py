@@ -16,6 +16,8 @@ setup(
         # If any package contains *.txt etc include
         '': ['*.txt', '*.html', '*.md'],
     },
+    include_package_data=True,
+    zip_safe=False,
     classifiers=['Development Status :: 4 - Beta',
         'Framework :: Django',
         'Intended Audience :: Developers',
