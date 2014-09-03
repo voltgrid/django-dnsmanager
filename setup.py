@@ -14,7 +14,7 @@ setup(
     packages=find_packages(),
     package_data = {
         # If any package contains *.txt etc include
-        '': ['*.txt', '*.html', '*.md'],
+        '': ['*.txt',],
     },
     include_package_data=True,
     zip_safe=False,
