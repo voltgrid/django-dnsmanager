@@ -30,17 +30,14 @@ class DateMixin(models.Model):
         super(DateMixin, self).save(*args, **kwargs)
 
 
-def validate_hostname_exists(hostname, domain):
+def validate_hostname_exists(fqdn):
     """
     :param hostname: Is hostname valid
     :return: True, or ValidationError
     """
     # Check hostname exists
     try:
-        if hostname.endswith('.'):
-            socket.gethostbyname(hostname)
-        else:
-            socket.gethostbyname('%s.%s' % (hostname, domain))
+        socket.gethostbyname(fqdn)
         return True
     except socket.error:
         raise ValidationError('Hostname does not exist.')
@@ -220,7 +217,7 @@ class BaseZoneRecord(DateMixin):
         if self.data.endswith('.'):
             return self.data
         else:
-            return '%s.%s' % (self.data, self.zone.domain)
+            return '%s.%s.' % (self.data, self.zone.domain)
 
 
 class AddressRecord(BaseZoneRecord):
@@ -249,9 +246,18 @@ class CanonicalNameRecord(BaseZoneRecord):
     def __unicode__(self):
         return "%s.%s -> %s" % (self.data, self.zone, self.target)
 
+    @property
+    def fq_target(self):
+        if self.target.endswith('.'):
+            return self.target
+        else:
+            return '%s.%s.' % (self.target, self.zone.domain)
+
     def clean(self):
         validate_hostname_string(self.data)
-        validate_hostname_exists(self.target, self.zone.domain)
+        validate_hostname_exists(self.fq_data)
+        validate_hostname_string(self.target)
+        validate_hostname_exists(self.fq_target)
 
 
 class MailExchangeRecord(BaseZoneRecord):
@@ -268,7 +274,7 @@ class MailExchangeRecord(BaseZoneRecord):
 
     def clean(self):
         validate_hostname_string(self.data)
-        validate_hostname_exists(self.fq_data, self.zone.domain)
+        validate_hostname_exists(self.fq_data)
 
 
 class NameServerRecord(BaseZoneRecord):
@@ -283,7 +289,7 @@ class NameServerRecord(BaseZoneRecord):
         return "%s %s" % (self.zone, self.data)
 
     def clean(self):
-        validate_hostname_exists(self.fq_data, self.zone.domain)
+        validate_hostname_exists(self.fq_data)
 
 
 class TextRecord(BaseZoneRecord):
