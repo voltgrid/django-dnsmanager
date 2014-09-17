@@ -142,8 +142,8 @@ class Zone(DateMixin):
         text = str(text.replace('\r\n', '\n'))  # DOS 2 Unix
         try:
             bind_zone = dns.zone.from_text(text=text, origin=self.domain.name, check_origin=False, relativize=True)
-        except dns.exception.SyntaxError:
-            return False
+        except (AttributeError, dns.exception.SyntaxError) as e:
+            return False, str(e)
 
         for (name, ttl, rdata) in bind_zone.iterate_rdatas('SOA'):  # should only be one
             self.expire = rdata.expire
@@ -187,7 +187,7 @@ class Zone(DateMixin):
             r.ttl = int(ttl)
             r.save()
 
-        return True
+        return True, 'Saved'
 
 
 class BaseZoneRecord(DateMixin):
