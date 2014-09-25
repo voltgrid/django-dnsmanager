@@ -143,7 +143,7 @@ class Zone(DateMixin):
         try:
             bind_zone = dns.zone.from_text(text=text, origin=self.domain.name, check_origin=False, relativize=True)
         except (AttributeError, dns.exception.SyntaxError) as e:
-            return False, str(e)
+            return False, 'Zone Update Failed: %s' % str(e)
 
         for (name, ttl, rdata) in bind_zone.iterate_rdatas('SOA'):  # should only be one
             self.expire = rdata.expire
@@ -187,7 +187,7 @@ class Zone(DateMixin):
             r.ttl = int(ttl)
             r.save()
 
-        return True, 'Saved'
+        return True, 'Zone Update Successful'
 
 
 class BaseZoneRecord(DateMixin):
