@@ -4,6 +4,7 @@ from .models import CanonicalNameRecord
 from .models import MailExchangeRecord
 from .models import NameServerRecord
 from .models import TextRecord
+from .models import ServiceRecord
 from .settings import ZONE_DEFAULTS
 
 
@@ -55,12 +56,12 @@ class RemovePerRecordTtls(Recipe):
     """ Remove Per Record TTLs """
     def __init__(self, zone):
         super(RemovePerRecordTtls, self).__init__(zone)
-
         AddressRecord.objects.filter(zone=self.zone).update(ttl=None)
         CanonicalNameRecord.objects.filter(zone=self.zone).update(ttl=None)
         MailExchangeRecord.objects.filter(zone=self.zone).update(ttl=None)
         NameServerRecord.objects.filter(zone=self.zone).update(ttl=None)
         TextRecord.objects.filter(zone=self.zone).update(ttl=None)
+        ServiceRecord.objects.filter(zone=self.zone).update(ttl=None)
 
 
 class ResetZoneDefaults(Recipe):
