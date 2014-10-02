@@ -3,7 +3,8 @@ from django.conf import settings
 
 import reversion
 
-from models import AddressRecord, CanonicalNameRecord, MailExchangeRecord, NameServerRecord, TextRecord, Zone
+from models import AddressRecord, CanonicalNameRecord, MailExchangeRecord, \
+    NameServerRecord, TextRecord, ServiceRecord, Zone
 
 
 class AddressRecordInline(admin.TabularInline):
@@ -31,12 +32,17 @@ class TextRecordInline(admin.TabularInline):
     extra = 0
 
 
+class ServiceRecordInline(admin.TabularInline):
+    model = ServiceRecord
+    extra = 0
+
 class ZoneAdmin(reversion.VersionAdmin):
     inlines = [AddressRecordInline,
                CanonicalNameRecordInline,
                MailExchangeRecordInline,
                NameServerRecordInline,
-               TextRecordInline]
+               TextRecordInline,
+               ServiceRecordInline]
     list_display = ('__unicode__', 'is_valid')
     list_filter = ('domain__account', )
 

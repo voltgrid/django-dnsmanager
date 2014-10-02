@@ -33,13 +33,55 @@ class DNSCreationTest(TestCase):
         ns_record_1 = mommy.make_recipe('dnsmanager.ns_record', zone=zone, data='ns1.example.com')
         ns_record_2 = mommy.make_recipe('dnsmanager.ns_record', zone=zone, data='ns2.example.com')
         text_record = mommy.make_recipe('dnsmanager.text_record', zone=zone, data="@", text='"v=spf1 a -all"')
-
+        srv_record = mommy.make_recipe('dnsmanager.service_record',
+                                       zone=zone,
+                                       data="_sip._tls",
+                                       target='sip.example.com.',
+                                       port=443,
+                                       weight=10,
+                                       priority=1)
         self.assertTrue(isinstance(zone, Zone))
 
     def test_zone_import(self):
-        data = {"id": 63,
-            "domain": "vaultgrid.com",
-            "data": "$ORIGIN .\n$TTL 3600\nvaultgrid.com IN SOA ns1.cromova.net. dns-admin (\n 2013120600 ; serial\n 28800 ; refresh\n 7200 ; retry\n 604800 ; expire\n 600 ; nxdomain ttl (bind 9+)\n )\n\n$ORIGIN vaultgrid.com.\n\n; NameServerRecords\n\n@    3600    IN    NS    ns1.cromova.net.\n\n@    3600    IN    NS    ns2.cromova.net.\n\n\n; AddressRecords\n\n@    3600    IN    A    103.245.152.101\n\nwww    3600    IN    A    103.245.152.101\n\n\n; CanonicalNameRecord\n\n\n; MailExchangeRecord\n\n\n; TXT\n",
+        data = {
+            "id": 63,
+            "domain": "voltgrid.com",
+            "data": "$ORIGIN .\n"
+                    "$TTL 3600\n"
+                    "voltgrid.com IN SOA ns1.voltgrid.com. dns-admin (\n"
+                    " 2013120600 ; serial\n"
+                    " 28800 ; refresh\n"
+                    " 7200 ; retry\n"
+                    " 604800 ; expire\n"
+                    " 600 ; nxdomain ttl (bind 9+)\n"
+                    " )\n"
+                    "\n"
+                    "$ORIGIN voltgrid.com.\n"
+                    "\n"
+                    "; NameServerRecords\n"
+                    "\n"
+                    "@    3600    IN    NS    ns1.voltgrid.com.\n"
+                    "\n"
+                    "@    3600    IN    NS    ns2.voltgrid.com.\n"
+                    "\n"
+                    "\n"
+                    "; AddressRecords\n"
+                    "\n"
+                    "@    3600    IN    A    103.245.152.101\n"
+                    "\n"
+                    "www    3600    IN    A    103.245.152.101\n"
+                    "\n"
+                    "\n"
+                    "; CanonicalNameRecord\n"
+                    "\n"
+                    "\n"
+                    "; MailExchangeRecord\n"
+                    "\n"
+                    "\n"
+                    "; TXT\n"
+                    "; SRV\n"
+                    "_sip._tls    3600    IN    SRV 100 1 443    sipdir.online.lync.com.\n"
+                    "",
             "updated": "2013-12-06T04:30:12Z"
         }
 
@@ -50,6 +92,7 @@ class DNSCreationTest(TestCase):
 
         self.assertEqual(zone.addressrecord_set.count(), 2)
         self.assertEqual(zone.nameserverrecord_set.count(), 2)
+        self.assertEqual(zone.servicerecord_set.count(), 1)
         self.assertNotEqual(zone.serial, 2013120600)
 
 

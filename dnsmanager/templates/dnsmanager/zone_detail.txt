@@ -34,3 +34,8 @@ $ORIGIN {{ object.domain }}.
 {% for object in object.textrecord_set.all %}
 @    {{ object.ttlx }}    IN    TXT    {{ object.text|safe }}
 {% endfor %}
+
+; SRV
+{% for object in object.servicerecord_set.all %}
+{{ object.data }}    {{ object.ttlx }}    IN    SRV {{ object.priority }} {{ object.weight }} {{ object.port }}    {{ object.target }}
+{% endfor %}

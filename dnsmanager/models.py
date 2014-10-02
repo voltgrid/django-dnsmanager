@@ -60,6 +60,19 @@ def validate_hostname_string(hostname):
         raise ValidationError('Hostname is not valid.')
 
 
+def validate_service_record_data(data):
+    # valid _sip._tls
+    # invalid _sip._tls.
+    # invalid sip.tls.
+    # (\.[\w\d\.-]+\.)
+    regex = re.compile(r'_[a-z\d-]{1,63}\._[a-z\d-]{1,63}?$', re.IGNORECASE)
+    m = regex.match(data)
+    if m is not None:
+        return True
+    else:
+        raise ValidationError('Service record is not valid.')
+
+
 class Zone(DateMixin):
     domain = models.ForeignKey('.'.join(settings.DNS_MANAGER_DOMAIN_MODEL.split('.')[-2:]), primary_key=True)
     soa_email = models.CharField(max_length=128, default=ZONE_DEFAULTS['soa'])
@@ -187,6 +200,16 @@ class Zone(DateMixin):
             r.ttl = int(ttl)
             r.save()
 
+        for (name, ttl, rdata) in bind_zone.iterate_rdatas('SRV'):
+            r, c = ServiceRecord.objects.get_or_create(zone=self,
+                                                       data=name.to_text(),
+                                                       target=rdata.target.to_text(),
+                                                       port=int(rdata.port),
+                                                       weight=int(rdata.weight),
+                                                       priority=rdata.priority)
+            r.ttl = int(ttl)
+            r.save()
+
         return True, 'Zone Update Successful'
 
 
@@ -307,3 +330,20 @@ class TextRecord(BaseZoneRecord):
             raise ValidationError('Record must begin and end with double quotes.')
         if not self.text.count('"') == 2:
             raise ValidationError('Record must not contain more than 2 quotes.')
+
+
+class ServiceRecord(BaseZoneRecord):
+    priority = models.IntegerField(max_length=3, help_text="Priority")
+    weight = models.IntegerField(max_length=3, help_text="Weight")
+    port = models.IntegerField(max_length=5, help_text="TCP / UDP Port")
+    target = models.CharField(max_length=128, help_text="Target")
+
+    class Meta:
+        db_table = 'dns_servicerecord'
+        unique_together = [('zone', 'data', 'target')]
+
+    def __unicode__(self):
+        return "%s.%s -srv-> %s" % (self.data, self.zone, self.target)
+
+    def clean(self):
+        validate_service_record_data(self.data)
