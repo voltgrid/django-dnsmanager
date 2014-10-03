@@ -278,7 +278,6 @@ class CanonicalNameRecord(BaseZoneRecord):
 
     def clean(self):
         validate_hostname_string(self.data)
-        validate_hostname_exists(self.fq_data)
         validate_hostname_string(self.target)
         validate_hostname_exists(self.fq_target)
 
