@@ -41,8 +41,8 @@ class GoogleApps(Recipe):
             ('10', 'aspmx.l.google.com.'),
             ('20', 'alt1.aspmx.l.google.com.'),
             ('20', 'alt2.aspmx.l.google.com.'),
-            ('30', 'aspmx2.googlemail.com.'),
-            ('30', 'aspmx3.googlemail.com.'),
+            ('30', 'alt3.aspmx.l.google.com.'),
+            ('30', 'alt4.aspmx.l.google.com.'),
         ]
 
         # Remove existing MX
