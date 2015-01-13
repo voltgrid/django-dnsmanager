@@ -10,6 +10,8 @@ ZONE_DEFAULTS['soa'] = 'dns-admin'
 
 # DNS_MANAGER_DOMAIN_MODEL = 'account.Domain'
 
+# DNS_MANAGER_ZONE_ADMIN_FILTER = ('domain__user', )
+
 DNS_MANAGER_RECIPES = (
             ('dnsmanager.recipes.GoogleApps', 'Set Google Apps MX / CNAME'),
             ('dnsmanager.recipes.RemovePerRecordTtls', 'Reset Record TTLs'),

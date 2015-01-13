@@ -36,6 +36,7 @@ class ServiceRecordInline(admin.TabularInline):
     model = ServiceRecord
     extra = 0
 
+
 class ZoneAdmin(reversion.VersionAdmin):
     inlines = [AddressRecordInline,
                CanonicalNameRecordInline,
@@ -44,7 +45,7 @@ class ZoneAdmin(reversion.VersionAdmin):
                TextRecordInline,
                ServiceRecordInline]
     list_display = ('__unicode__', 'is_valid')
-    list_filter = ('domain__account', )
+    list_filter = settings.DNS_MANAGER_ZONE_ADMIN_FILTER
 
     def run_recipe(self, recipe):
         """ Execute the given recipe from the recipe model """
