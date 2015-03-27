@@ -114,6 +114,10 @@ class Zone(DateMixin):
     def rname(self):
         return self.soa_email.replace('@', '.')
 
+    @property
+    def domain_name(self):
+        return str(self.domain)
+
     def get_absolute_url(self):
         return reverse('zone_detail', kwargs={'pk': self.pk, })
 
