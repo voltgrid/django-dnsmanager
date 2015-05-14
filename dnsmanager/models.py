@@ -131,6 +131,10 @@ class Zone(DateMixin):
                 raise ValidationError('You must assign at least two name servers.')
             if self.addressrecord_set.count() < 1:
                 raise ValidationError('You must assign at least one address record.')
+            # Validate that a / cname conflict does not occur
+            for a_record in self.addressrecord_set.all():
+                if self.canonicalnamerecord_set.filter(data=a_record.data).exists():
+                    raise ValidationError('Cannot have CNAME and A records with same hostname.')
         except ObjectDoesNotExist:
             # In case that related record fails to validate
             pass
