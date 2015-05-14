@@ -55,7 +55,7 @@ def validate_hostname_string(hostname):
         return False
     if hostname[-1] == ".":
         hostname = hostname[:-1] # strip exactly one dot from the right, if present
-    allowed = re.compile("(?!-)[A-Z\d-]{1,63}(?<!-)$", re.IGNORECASE)
+    allowed = re.compile("(?!-)[A-Z\d-]{1,63}(?<!-)$|\*", re.IGNORECASE)
     if not all(allowed.match(x) for x in hostname.split(".")):
         raise ValidationError('Hostname is not valid.')
 
