@@ -14,6 +14,19 @@ from django.template.loader import render_to_string
 from .settings import ZONE_DEFAULTS
 
 
+class IntegerRangeField(models.IntegerField):
+    """ Allow limiting Integer fields """
+
+    def __init__(self, verbose_name=None, name=None, min_value=None, max_value=None, **kwargs):
+        self.min_value, self.max_value = min_value, max_value
+        models.IntegerField.__init__(self, verbose_name, name, **kwargs)
+
+    def formfield(self, **kwargs):
+        defaults = {'min_value': self.min_value, 'max_value':self.max_value}
+        defaults.update(kwargs)
+        return super(IntegerRangeField, self).formfield(**defaults)
+
+
 class DateMixin(models.Model):
     """ Model Mixin to add modification and creation datestamps """
     created = models.DateTimeField("Date Created", auto_now_add=True)
@@ -74,7 +87,7 @@ def validate_service_record_data(data):
 
 
 class Zone(DateMixin):
-    domain = models.ForeignKey('.'.join(settings.DNS_MANAGER_DOMAIN_MODEL.split('.')[-2:]), primary_key=True)
+    domain = models.OneToOneField('.'.join(settings.DNS_MANAGER_DOMAIN_MODEL.split('.')[-2:]))
     soa_email = models.CharField(max_length=128, default=ZONE_DEFAULTS['soa'])
     serial = models.PositiveIntegerField(default=0)
     refresh = models.PositiveIntegerField(default=ZONE_DEFAULTS['refresh'])
@@ -253,7 +266,7 @@ class BaseZoneRecord(DateMixin):
 
 class AddressRecord(BaseZoneRecord):
 
-    ip = models.IPAddressField(help_text="IP Address")
+    ip = models.GenericIPAddressField(help_text="IP Address")
 
     class Meta:
         db_table = 'dns_addressrecord'
@@ -292,7 +305,7 @@ class CanonicalNameRecord(BaseZoneRecord):
 
 class MailExchangeRecord(BaseZoneRecord):
 
-    priority = models.IntegerField(max_length=3, help_text="Priority")
+    priority = IntegerRangeField(min_value=0, max_value=65535, help_text="Priority")
 
     class Meta:
         db_table = 'dns_mailexchangerecord'
@@ -340,9 +353,9 @@ class TextRecord(BaseZoneRecord):
 
 
 class ServiceRecord(BaseZoneRecord):
-    priority = models.IntegerField(max_length=3, help_text="Priority")
-    weight = models.IntegerField(max_length=3, help_text="Weight")
-    port = models.IntegerField(max_length=5, help_text="TCP / UDP Port")
+    priority = IntegerRangeField(min_value=0, max_value=65535, help_text="Priority")
+    weight = IntegerRangeField(min_value=0, max_value=65535, help_text="Weight")
+    port = IntegerRangeField(min_value=1, max_value=65535, help_text="TCP / UDP Port")
     target = models.CharField(max_length=128, help_text="Target")
 
     class Meta:
