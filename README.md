@@ -24,7 +24,7 @@ Install with pip:
 
 Add to your Django project in your Python path.
 
-Add `dnsmanager` to your `INSTALLED_APPS`.
+Add `reversion` and `dnsmanager` to your `INSTALLED_APPS`.
 
 Set `DNS_MANAGER_DOMAIN_MODEL` in `settings.py`. This must point to a model that provides a _name_ field. Eg:
 
