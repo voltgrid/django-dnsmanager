@@ -31,3 +31,9 @@ MIDDLEWARE_CLASSES = (
 )
 
 DNS_MANAGER_DOMAIN_MODEL = 'test_app.Domain'
+
+from model_mommy.generators import gen_integer
+
+MOMMY_CUSTOM_FIELDS_GEN = {
+    'dnsmanager.models.IntegerRangeField': gen_integer,
+}
