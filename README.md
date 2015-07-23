@@ -38,5 +38,7 @@ Set `DNS_MANAGER_DOMAIN_MODEL` in `settings.py`. This must point to a model that
     
         def __unicode__(self):
             return "%s" % self.name
+
+Set `DNS_MANAGER_ZONE_ADMIN_FILTER` in `settings.py`. This must point to a filterable entity `= ('domain__user', )`
             
 Run `manage.py syncdb`.
