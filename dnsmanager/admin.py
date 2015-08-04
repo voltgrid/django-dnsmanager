@@ -1,7 +1,9 @@
 from django.contrib import admin
-import settings
-
 import reversion
+
+import settings
+from signals import zone_fully_saved_signal
+
 
 from models import AddressRecord, CanonicalNameRecord, MailExchangeRecord, \
     NameServerRecord, TextRecord, ServiceRecord, Zone
@@ -65,5 +67,18 @@ class ZoneAdmin(reversion.VersionAdmin):
             cls = getattr(module, name)
             actions[item[1]] = (self.run_recipe(cls), item[1], item[1])
         return actions
+
+    def response_add(self, request, obj, post_url_continue=None):
+        obj = self.after_saving_model_and_related_inlines(obj, created=True)
+        return super(ZoneAdmin, self).response_add(request, obj)
+
+    def response_change(self, request, obj):
+        obj = self.after_saving_model_and_related_inlines(obj, created=False)
+        return super(ZoneAdmin, self).response_change(request, obj)
+
+    def after_saving_model_and_related_inlines(self, obj, created):
+        zone_fully_saved_signal.send(sender=self.__class__, instance=obj, created=created)
+        return obj
+
 
 admin.site.register(Zone, ZoneAdmin)
