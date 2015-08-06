@@ -41,4 +41,5 @@ setup(
         'dnspython',
         'django-reversion'
     ],
+    tests_require=['coveralls', 'model_mommy'],
 )
