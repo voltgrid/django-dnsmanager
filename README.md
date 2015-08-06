@@ -2,7 +2,7 @@
 
 Reusable Django app that provides DNS Zone editing and management.
 
-This is used by [Volt Grid](https://www.voltgrid.com/).
+This is used by [Volt Grid](https://www.voltgrid.com/) and [Panubo DNS UI](https://github.com/panubo/panubo-dns).
 
 [![Build Status](https://travis-ci.org/voltgrid/django-dnsmanager.svg?branch=master)](https://travis-ci.org/voltgrid/django-dnsmanager)
 [![Coverage Status](https://coveralls.io/repos/voltgrid/django-dnsmanager/badge.png)](https://coveralls.io/r/voltgrid/django-dnsmanager)
