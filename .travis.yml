@@ -9,6 +9,7 @@ env:
 
 install:
   - pip install -q $DJANGO
+  - pip install coveralls model_mommy
   - python setup.py -q install
 
 before_script:
