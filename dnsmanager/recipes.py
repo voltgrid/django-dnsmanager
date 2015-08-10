@@ -80,9 +80,7 @@ class ResetZoneDefaults(Recipe):
 
 class ReSave(Recipe):
     """ Force resave of the zone """
-    def __init__(self, zone):
-        super(ReSave, self).__init__(zone)
-        zone_fully_saved_signal.send(sender=self.__class__, instance=self.zone, created=False)
+    pass  # Null recipe
 
 
 class NameServerRecipe(Recipe):
