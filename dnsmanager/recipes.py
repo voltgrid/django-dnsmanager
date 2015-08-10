@@ -6,6 +6,7 @@ from .models import NameServerRecord
 from .models import TextRecord
 from .models import ServiceRecord
 from .settings import ZONE_DEFAULTS
+from .signals import zone_fully_saved_signal
 
 
 class Recipe(object):
@@ -75,11 +76,44 @@ class ResetZoneDefaults(Recipe):
         self.zone.minimum = ZONE_DEFAULTS['minimum']
         self.zone.ttl = ZONE_DEFAULTS['ttl']
         self.zone.soa_email = ZONE_DEFAULTS['soa']
-        self.zone.save()
 
 
 class ReSave(Recipe):
     """ Force resave of the zone """
     def __init__(self, zone):
         super(ReSave, self).__init__(zone)
-        self.zone.save()
+        zone_fully_saved_signal.send(sender=self.__class__, instance=self.zone, created=False)
+
+
+class NameServerRecipe(Recipe):
+    """ Superclass for Name Server Recipe """
+    data = None
+
+    def __init__(self, zone):
+        super(NameServerRecipe, self).__init__(zone)
+        self.set_ns()
+
+    def set_ns(self):
+
+        # Remove existing NS
+        NameServerRecord.objects.filter(zone=self.zone).delete()
+
+        for d in self.data:
+            NameServerRecord.objects.get_or_create(zone=self.zone, data=d)
+
+
+class MxRecipe(Recipe):
+
+    data = None
+
+    def __init__(self, zone):
+        super(MxRecipe, self).__init__(zone)
+        self.set_mx()
+
+    def set_mx(self):
+
+        # Remove existing MX
+        MailExchangeRecord.objects.filter(zone=self.zone).delete()
+
+        for p, d in self.data:
+            MailExchangeRecord.objects.get_or_create(zone=self.zone, data=d, priority=p)

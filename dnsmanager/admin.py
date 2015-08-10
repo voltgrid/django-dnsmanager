@@ -39,6 +39,7 @@ class ServiceRecordInline(admin.TabularInline):
     extra = 0
 
 
+@admin.register(Zone)
 class ZoneAdmin(reversion.VersionAdmin):
     inlines = [AddressRecordInline,
                CanonicalNameRecordInline,
@@ -79,6 +80,3 @@ class ZoneAdmin(reversion.VersionAdmin):
     def after_saving_model_and_related_inlines(self, obj, created):
         zone_fully_saved_signal.send(sender=self.__class__, instance=obj, created=created)
         return obj
-
-
-admin.site.register(Zone, ZoneAdmin)
