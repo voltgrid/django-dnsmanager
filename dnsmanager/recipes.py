@@ -76,3 +76,10 @@ class ResetZoneDefaults(Recipe):
         self.zone.ttl = ZONE_DEFAULTS['ttl']
         self.zone.soa_email = ZONE_DEFAULTS['soa']
         self.zone.save()
+
+
+class ReSave(Recipe):
+    """ Force resave of the zone """
+    def __init__(self, zone):
+        super(ReSave, self).__init__(zone)
+        self.zone.save()

@@ -11,7 +11,8 @@ ZONE_DEFAULTS['soa'] = 'dns-admin'
 DNS_MANAGER_RECIPES_DEFAULT = (
             ('dnsmanager.recipes.GoogleApps', 'Set Google Apps MX / CNAME'),
             ('dnsmanager.recipes.RemovePerRecordTtls', 'Reset Record TTLs'),
-            ('dnsmanager.recipes.ResetZoneDefaults', 'Reset Zone Defaults')
+            ('dnsmanager.recipes.ResetZoneDefaults', 'Reset Zone Defaults'),
+            ('dnsmanager.recipes.ReSave', 'Force Resave / Publish')
         )
 
 DNS_MANAGER_DOMAIN_MODEL = getattr(settings, 'DNS_MANAGER_DOMAIN_MODEL', None)
