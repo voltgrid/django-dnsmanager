@@ -5,7 +5,7 @@ $TTL {{ object.ttl }}
                                 {{ object.refresh }} ; refresh
                                 {{ object.retry }} ; retry
                                 {{ object.expire }} ; expire
-                                {{ object.minimum }} ; nxdomain ttl (bind 9+)
+                                {{ object.minimum }} ; minimum: nxdomain ttl (bind 9+)
                                 )
 
 $ORIGIN {{ object.domain }}.

@@ -2,7 +2,7 @@
 ZONE_DEFAULTS_DEFAULT = dict()
 ZONE_DEFAULTS_DEFAULT['refresh'] = 28800    # 8 hours
 ZONE_DEFAULTS_DEFAULT['retry'] = 7200       # 2 hours
-ZONE_DEFAULTS_DEFAULT['expire'] = 604800    # 1 week
+ZONE_DEFAULTS_DEFAULT['expire'] = 2419200   # 1 month
 ZONE_DEFAULTS_DEFAULT['minimum'] = 600      # 10 minutes
 ZONE_DEFAULTS_DEFAULT['ttl'] = 3600         # 1 hour
 ZONE_DEFAULTS_DEFAULT['soa'] = 'dns-admin'
