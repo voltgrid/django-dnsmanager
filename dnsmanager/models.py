@@ -108,6 +108,9 @@ class Zone(DateMixin):
     def __unicode__(self):
         return "%s [%s]" % (self.domain, self.serial)
 
+    def clear_cache(self):
+        return cache.delete_pattern("%s_*" % self.domain_name)
+
     def save(self, *args, **kwargs):
         # increment serial on save
         serial_now = int(time.strftime('%Y%m%d00'))
@@ -115,8 +118,7 @@ class Zone(DateMixin):
             self.serial = serial_now
         else:
             self.serial += 1
-        # clear cache
-        cache.delete_pattern("%s_*" % self.domain_name)
+        self.clear_cache()
         super(Zone, self).save(*args, **kwargs)
 
     @property

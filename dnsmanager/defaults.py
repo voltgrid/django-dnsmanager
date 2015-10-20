@@ -11,7 +11,8 @@ DNS_MANAGER_RECIPES_DEFAULT = (
     ('dnsmanager.recipes.GoogleApps', 'Set Google Apps MX / CNAME'),
     ('dnsmanager.recipes.RemovePerRecordTtls', 'Reset Record TTLs'),
     ('dnsmanager.recipes.ResetZoneDefaults', 'Reset Zone Defaults'),
-    ('dnsmanager.recipes.ReSave', 'Force Resave / Publish')
+    ('dnsmanager.recipes.ReSave', 'Force Resave / Publish'),
+    ('dnsmanager.recipes.ReValidate', 'Force Revalidation')
 )
 
 DNS_MANAGER_NAMESERVERS_DEFAULT = ('ns1.example.com.', 'ns2.example.com.')

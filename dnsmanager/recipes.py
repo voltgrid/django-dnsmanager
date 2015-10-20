@@ -112,3 +112,10 @@ class ResetZoneDefaults(Recipe):
 class ReSave(Recipe):
     """ Force resave of the zone """
     pass  # Null recipe
+
+
+class ReValidate(Recipe):
+    """ Force revalidation of the zone """
+    def __init__(self, zone):
+        super(ReValidate, self).__init__(zone)
+        self.zone.clear_cache()
