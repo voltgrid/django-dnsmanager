@@ -5,6 +5,7 @@ import re
 import dns.resolver
 import dns.zone
 
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -114,6 +115,8 @@ class Zone(DateMixin):
             self.serial = serial_now
         else:
             self.serial += 1
+        # clear cache
+        cache.delete_pattern("%s_*" % self.domain_name)
         super(Zone, self).save(*args, **kwargs)
 
     @property
@@ -159,12 +162,17 @@ class Zone(DateMixin):
             raise ValidationError('Failed to parse zone file with: %s' % str(e))
 
     def is_valid(self):
-        try:
-            self.validate()
-        except ValidationError:
-            return False
-        else:
-            return True
+        key = '%s_validation' % (self.domain_name)
+        data = cache.get(key, None)
+        if data is None:
+            try:
+                self.validate()
+            except ValidationError:
+                data = False
+            else:
+                data = True
+        cache.set(key, data)
+        return data
     is_valid.boolean = True  # Attribute for django admin (makes for pretty icons)
 
     def check_delegation(self):
@@ -179,12 +187,17 @@ class Zone(DateMixin):
             raise ValidationError('Exception during delegation check: %s' % str(e))
 
     def is_delegated(self):
-        try:
-            self.check_delegation()
-        except ValidationError:
-            return False
-        else:
-            return True
+        key = '%s_delegation' % (self.domain_name)
+        data = cache.get(key, None)
+        if data is None:
+            try:
+                self.check_delegation()
+            except ValidationError:
+                data = False
+            else:
+                data = True
+        cache.set(key, data)
+        return data
     is_delegated.boolean = True  # Attribute for django admin (makes for pretty icons)
 
     def render(self):
