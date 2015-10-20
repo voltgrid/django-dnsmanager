@@ -181,7 +181,7 @@ class Zone(DateMixin):
         try:
             answers = dns.resolver.query(self.domain_name, 'NS')
             for rdata in answers:
-                if str(rdata) not in DNS_MANAGER_NAMESERVERS:
+                if str(rdata).lower() not in DNS_MANAGER_NAMESERVERS:
                     raise ValidationError('Zone nameserver %s is not in DNS_MANAGER_NAMESERVERS' % str(rdata))
             if len(answers) <= 1:
                 raise ValidationError('Zone has insufficient nameservers count: %s' % len(answers))
