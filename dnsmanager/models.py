@@ -111,6 +111,10 @@ class Zone(DateMixin):
     def clear_cache(self):
         return cache.delete_pattern("%s_*" % self.domain_name)
 
+    def delete(self, *args, **kwargs):
+        self.clear_cache()
+        super(Zone, self).delete(*args, **kwargs)
+
     def save(self, *args, **kwargs):
         # increment serial on save
         serial_now = int(time.strftime('%Y%m%d00'))
