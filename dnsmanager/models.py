@@ -171,7 +171,7 @@ class Zone(DateMixin):
                 data = False
             else:
                 data = True
-        cache.set(key, data)
+        cache.set(key, data, None)
         return data
     is_valid.boolean = True  # Attribute for django admin (makes for pretty icons)
 
@@ -196,7 +196,7 @@ class Zone(DateMixin):
                 data = False
             else:
                 data = True
-        cache.set(key, data)
+        cache.set(key, data, None)
         return data
     is_delegated.boolean = True  # Attribute for django admin (makes for pretty icons)
 
