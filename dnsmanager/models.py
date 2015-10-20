@@ -2,6 +2,7 @@ import time
 import socket
 import re
 
+import dns.resolver
 import dns.zone
 
 from django.core.exceptions import ValidationError
@@ -11,7 +12,7 @@ from django.conf import settings
 from django.db import models
 from django.template.loader import render_to_string
 
-from .settings import ZONE_DEFAULTS
+from .settings import ZONE_DEFAULTS, DNS_MANAGER_NAMESERVERS
 
 
 class IntegerRangeField(models.IntegerField):
@@ -165,6 +166,26 @@ class Zone(DateMixin):
         else:
             return True
     is_valid.boolean = True  # Attribute for django admin (makes for pretty icons)
+
+    def check_delegation(self):
+        try:
+            answers = dns.resolver.query(self.domain_name, 'NS')
+            for rdata in answers:
+                if str(rdata) not in DNS_MANAGER_NAMESERVERS:
+                    raise ValidationError('Zone nameserver %s is not in DNS_MANAGER_NAMESERVERS' % str(rdata))
+            if len(answers) <= 1:
+                raise ValidationError('Zone has insufficient nameservers count: %s' % len(answers))
+        except Exception as e:
+            raise ValidationError('Exception during delegation check: %s' % str(e))
+
+    def is_delegated(self):
+        try:
+            self.check_delegation()
+        except ValidationError:
+            return False
+        else:
+            return True
+    is_delegated.boolean = True  # Attribute for django admin (makes for pretty icons)
 
     def render(self):
         """

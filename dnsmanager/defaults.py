@@ -13,3 +13,5 @@ DNS_MANAGER_RECIPES_DEFAULT = (
     ('dnsmanager.recipes.ResetZoneDefaults', 'Reset Zone Defaults'),
     ('dnsmanager.recipes.ReSave', 'Force Resave / Publish')
 )
+
+DNS_MANAGER_NAMESERVERS_DEFAULT = ('ns1.example.com.', 'ns2.example.com.')

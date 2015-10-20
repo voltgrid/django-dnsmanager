@@ -47,7 +47,7 @@ class ZoneAdmin(reversion.VersionAdmin):
                NameServerRecordInline,
                TextRecordInline,
                ServiceRecordInline]
-    list_display = ('__unicode__', 'is_valid')
+    list_display = ('__unicode__', 'is_valid', 'is_delegated')
     list_filter = settings.DNS_MANAGER_ZONE_ADMIN_FILTER
 
     def run_recipe(self, recipe):
