@@ -12,6 +12,9 @@ class Recipe(object):
     def __init__(self, zone):
         self.zone = zone
 
+    def save(self):
+        self.zone.save()
+
 
 class NameServerRecipe(Recipe):
     """ Superclass for Name Server Recipe """
@@ -119,3 +122,6 @@ class ReValidate(Recipe):
     def __init__(self, zone):
         super(ReValidate, self).__init__(zone)
         self.zone.clear_cache()
+
+    def save(self):
+        pass

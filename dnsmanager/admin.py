@@ -55,8 +55,8 @@ class ZoneAdmin(reversion.VersionAdmin):
         @reversion.create_revision()
         def apply_recipe(modeladmin, request, queryset):
             for zone in queryset.all():
-                recipe(zone)
-                zone.save()
+                r = recipe(zone)
+                r.save()
                 zone_fully_saved_signal.send(sender=self.__class__, instance=zone, created=False)
         return apply_recipe
 
