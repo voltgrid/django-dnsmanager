@@ -109,7 +109,10 @@ class Zone(DateMixin):
         return "%s [%s]" % (self.domain, self.serial)
 
     def clear_cache(self):
-        return cache.delete_pattern("%s_*" % self.domain_name)
+        try:
+            return cache.delete_pattern("%s_*" % self.domain_name)
+        except AttributeError:
+            return False
 
     def delete(self, *args, **kwargs):
         self.clear_cache()
