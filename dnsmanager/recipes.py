@@ -43,8 +43,8 @@ class CnameRecipe(Recipe):
 
     def set_cname(self, data):
         if data is not None:
-            for d, t in data:
-                CanonicalNameRecord.objects.get_or_create(zone=self.zone, data=d, target=t)
+            for d, t, ttl in data:
+                CanonicalNameRecord.objects.get_or_create(zone=self.zone, data=d, target=t, ttl=ttl)
 
 
 class MxRecipe(Recipe):
@@ -60,26 +60,89 @@ class MxRecipe(Recipe):
         if data is not None:
             # Remove existing MX
             MailExchangeRecord.objects.filter(zone=self.zone).delete()
-            for p, d in data:
-                MailExchangeRecord.objects.get_or_create(zone=self.zone, data=d, priority=p)
+            for p, d, ttl in data:
+                MailExchangeRecord.objects.get_or_create(zone=self.zone, data=d, priority=p, ttl=ttl)
+
+
+class SPFRecipe(Recipe):
+    """ Superclass for Text Recipe """
+
+    data = None
+
+    def __init__(self, zone):
+        super(SPFRecipe, self).__init__(zone)
+        self.set_spf(self.data)
+
+    def set_spf(self, data):
+        if data is not None:
+            # Remove existing SPF
+            TextRecord.objects.filter(zone=self.zone, text__startswith='"v=spf1').delete()
+            for spf, ttl in data:
+                TextRecord.objects.get_or_create(zone=self.zone, text=spf, ttl=ttl)
+
+
+class ServiceRecipe(Recipe):
+    """ Superclass for Service Recipe """
+
+    data = None
+
+    def __init__(self, zone):
+        super(ServiceRecipe, self).__init__(zone)
+        self.set_service(self.data)
+
+    def set_service(self, data):
+        if data is not None:
+            for data, target, priority, weight, port,  ttl in data:
+                ServiceRecord.objects.get_or_create(zone=self.zone, priority=priority, weight=weight, port=port, target=target, data=data, ttl=ttl)
+
+
+class Office365(CnameRecipe, MxRecipe, SPFRecipe, ServiceRecipe):
+
+    data_mx = [
+        ('0', 'healthbanc-com.mail.protection.outlook.com.', 3600),
+    ]
+
+    data_cname = [
+        ('autodiscover', 'autodiscover.outlook.com.', 3600),
+        ('lyncdiscover', 'webdir.online.lync.com.', 3600),
+        ('sip', 'sipdir.online.lync.com.', 3600),
+        ('msoid', 'clientconfig.microsoftonline-p.net.', 3600),
+    ]
+
+    data_spf = [
+        ('"v=spf1 include:spf.protection.outlook.com -all"', 3600),
+    ]
+
+    # data, target, priority, weight, port,  ttl
+    data_service = [
+        ('_sipfederationtls._tcp', 'sipfed.online.lync.com.', 100, 1, 5061, 3600),
+        ('_sip._tls', 'sipdir.online.lync.com.', 100, 1, 443, 3600),
+    ]
+
+    def __init__(self, zone):
+        super(Office365, self).__init__(zone)
+        self.set_mx(self.data_mx)
+        self.set_cname(self.data_cname)
+        self.set_spf(self.data_spf)
+        self.set_service(self.data_service)
 
 
 class GoogleApps(CnameRecipe, MxRecipe):
 
     data_cname = [
-        ('calendar', 'ghs.googlehosted.com.'),
-        ('docs', 'ghs.googlehosted.com.'),
-        ('mail', 'ghs.googlehosted.com.'),
-        ('sites', 'ghs.googlehosted.com.'),
-        ('video', 'ghs.googlehosted.com.'),
+        ('calendar', 'ghs.googlehosted.com.', None),
+        ('docs', 'ghs.googlehosted.com.', None),
+        ('mail', 'ghs.googlehosted.com.', None),
+        ('sites', 'ghs.googlehosted.com.', None),
+        ('video', 'ghs.googlehosted.com.', None),
     ]
 
     data_mx = [
-        ('10', 'aspmx.l.google.com.'),
-        ('20', 'alt1.aspmx.l.google.com.'),
-        ('20', 'alt2.aspmx.l.google.com.'),
-        ('30', 'alt3.aspmx.l.google.com.'),
-        ('30', 'alt4.aspmx.l.google.com.'),
+        ('10', 'aspmx.l.google.com.', None),
+        ('20', 'alt1.aspmx.l.google.com.', None),
+        ('20', 'alt2.aspmx.l.google.com.', None),
+        ('30', 'alt3.aspmx.l.google.com.', None),
+        ('30', 'alt4.aspmx.l.google.com.', None),
     ]
 
     def __init__(self, zone):

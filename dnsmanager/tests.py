@@ -97,7 +97,7 @@ class DNSCreationTest(TestCase):
 
 
 # Recipe Tests
-from dnsmanager.recipes import GoogleApps, RemovePerRecordTtls, ResetZoneDefaults
+from dnsmanager.recipes import GoogleApps, Office365, RemovePerRecordTtls, ResetZoneDefaults
 
 
 class RecipeTest(TestCase):
@@ -121,6 +121,17 @@ class RecipeTest(TestCase):
         GoogleApps(zone)
         self.assertEqual(zone.mailexchangerecord_set.all().count(), 5)
         self.assertGreaterEqual(zone.canonicalnamerecord_set.all().count(), 5)
+
+    def test_office_365_recipe(self):
+        zone = mommy.make_recipe('dnsmanager.zone')
+        # add a record that will be removed later
+        mommy.make_recipe('dnsmanager.mx_record', zone=zone, priority=10)
+        # run recipe
+        Office365(zone)
+        self.assertEqual(zone.mailexchangerecord_set.all().count(), 1)
+        self.assertEqual(zone.canonicalnamerecord_set.all().count(), 4)
+        self.assertEqual(zone.textrecord_set.all().count(), 1)
+        self.assertEqual(zone.servicerecord_set.all().count(), 2)
 
     def test_remove_record_ttl_email(self):
         zone = mommy.make_recipe('dnsmanager.zone')
