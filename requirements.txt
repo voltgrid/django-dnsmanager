@@ -1,6 +1,6 @@
 Django
 dnspython
-django-reversion
+django-reversion==1.9.3
 
 # Testing / Development
 model-mommy
