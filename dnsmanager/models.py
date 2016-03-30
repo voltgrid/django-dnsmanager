@@ -328,7 +328,7 @@ class CanonicalNameRecord(BaseZoneRecord):
 
     class Meta:
         db_table = 'dns_canonicalnamerecord'
-        unique_together = [('zone', 'data', 'target')]
+        unique_together = [('zone', 'data')]
 
     def __unicode__(self):
         return "%s.%s -> %s" % (self.data, self.zone, self.target)
