@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 import dnsmanager.models
+from dnsmanager.settings import DNS_MANAGER_DOMAIN_MODEL
 
 
 class Migration(migrations.Migration):
@@ -115,7 +116,7 @@ class Migration(migrations.Migration):
                 ('expire', models.PositiveIntegerField(default=2419200)),
                 ('minimum', models.PositiveIntegerField(default=600, help_text=b'nxdomain ttl, bind9+')),
                 ('ttl', models.PositiveIntegerField(default=3600, help_text=b'Default record TTL')),
-                ('domain', models.OneToOneField(to='account.Domain')),
+                ('domain', models.OneToOneField(to='.'.join(DNS_MANAGER_DOMAIN_MODEL.split('.')[-2:]))),
             ],
             options={
                 'ordering': ['domain'],
