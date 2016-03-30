@@ -7,10 +7,6 @@ import dnsmanager.models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('account', '0002_auto_20151020_1226'),
-    ]
-
     operations = [
         migrations.CreateModel(
             name='AddressRecord',
