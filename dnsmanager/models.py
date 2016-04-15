@@ -313,6 +313,7 @@ class AddressRecord(BaseZoneRecord):
 
     class Meta:
         db_table = 'dns_addressrecord'
+        ordering = ['data']
         unique_together = [('zone', 'data', 'ip')]
 
     def __unicode__(self):
@@ -328,6 +329,7 @@ class CanonicalNameRecord(BaseZoneRecord):
 
     class Meta:
         db_table = 'dns_canonicalnamerecord'
+        ordering = ['data']
         unique_together = [('zone', 'data')]
 
     def __unicode__(self):
@@ -369,6 +371,7 @@ class NameServerRecord(BaseZoneRecord):
 
     class Meta:
         db_table = 'dns_nameserverrecord'
+        ordering = ['data']
         unique_together = [('zone', 'data')]
 
     def __unicode__(self):
@@ -384,6 +387,7 @@ class TextRecord(BaseZoneRecord):
 
     class Meta:
         db_table = 'dns_textrecord'
+        ordering = ['data', 'text']
 
     def __unicode__(self):
         return "%s [%s]" % (self.zone, self.text)
@@ -403,6 +407,7 @@ class ServiceRecord(BaseZoneRecord):
 
     class Meta:
         db_table = 'dns_servicerecord'
+        ordering = ['data', 'priority', 'target']
         unique_together = [('zone', 'data', 'target')]
 
     def __unicode__(self):
