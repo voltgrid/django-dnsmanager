@@ -10,32 +10,32 @@ $TTL {{ object.ttl }}
 
 $ORIGIN {{ object.domain }}.
 
-; NameServerRecords
+; Name Server Records
 {% for object in object.nameserverrecord_set.all %}
-@    {{ object.ttlx }}    IN    NS    {{ object.data }}
+{{ object.origin }}    {{ object.ttlx }}    IN    NS    {{ object.data }}
 {% endfor %}
 
-; AddressRecords
+; Address Records
 {% for object in object.addressrecord_set.all %}
 {{ object.data }}    {{ object.ttlx }}    IN    A    {{ object.ip }}
 {% endfor %}
 
-; CanonicalNameRecord
+; Canonical Name Records
 {% for object in object.canonicalnamerecord_set.all %}
 {{ object.data }}    {{ object.ttlx }}    IN    CNAME    {{ object.target }}
 {% endfor %}
 
-; MailExchangeRecord
+; Mail Exchange Records
 {% for object in object.mailexchangerecord_set.all %}
-@    {{ object.ttlx }}    IN    MX    {{ object.priority }} {{ object.data }}
+{{ object.origin }}    {{ object.ttlx }}    IN    MX    {{ object.priority }} {{ object.data }}
 {% endfor %}
 
-; TXT
+; TXT Records
 {% for object in object.textrecord_set.all %}
 {{ object.data }}    {{ object.ttlx }}    IN    TXT    {{ object.text|safe }}
 {% endfor %}
 
-; SRV
+; SRV Records
 {% for object in object.servicerecord_set.all %}
 {{ object.data }}    {{ object.ttlx }}    IN    SRV {{ object.priority }} {{ object.weight }} {{ object.port }}    {{ object.target }}
 {% endfor %}

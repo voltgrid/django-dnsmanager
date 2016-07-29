@@ -351,10 +351,11 @@ class CanonicalNameRecord(BaseZoneRecord):
 class MailExchangeRecord(BaseZoneRecord):
 
     priority = IntegerRangeField(min_value=0, max_value=65535, help_text="Priority")
+    origin = models.CharField(max_length=255, help_text="MX Origin", default='@')
 
     class Meta:
         db_table = 'dns_mailexchangerecord'
-        unique_together = [('zone', 'data')]
+        unique_together = [('zone', 'data', 'origin')]
         ordering = ['priority', 'data']
 
     def __unicode__(self):
@@ -367,12 +368,12 @@ class MailExchangeRecord(BaseZoneRecord):
 
 class NameServerRecord(BaseZoneRecord):
 
-    # FIXME: this record only valid for base zone, not subzone (maybe we want this)
+    origin = models.CharField(max_length=255, help_text="NS Origin", default='@')
 
     class Meta:
         db_table = 'dns_nameserverrecord'
         ordering = ['data']
-        unique_together = [('zone', 'data')]
+        unique_together = [('zone', 'data', 'origin')]
 
     def __unicode__(self):
         return "%s %s" % (self.zone, self.data)
