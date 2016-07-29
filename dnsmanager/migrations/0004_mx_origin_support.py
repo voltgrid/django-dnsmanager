@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dnsmanager', '0003_auto_20160729_1040'),
+        ('dnsmanager', '0003_ns_origin_support'),
     ]
 
     operations = [
