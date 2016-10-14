@@ -37,7 +37,8 @@ setup(
         'Topic :: System :: Systems Administration'
     ],
     install_requires=[
-        'django',
+        'django>=1.8',
+        'django<1.9',
         'dnspython',
         'django-reversion'
     ],
