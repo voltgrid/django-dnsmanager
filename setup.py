@@ -42,4 +42,5 @@ setup(
         'django-reversion'
     ],
     tests_require=['coveralls', 'model_mommy'],
+    test_suite='test_app.runtests.runtests',
 )
