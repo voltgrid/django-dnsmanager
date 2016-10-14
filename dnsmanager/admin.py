@@ -49,7 +49,20 @@ class ZoneAdmin(reversion.VersionAdmin):
                ServiceRecordInline]
     list_display = ('__unicode__', 'is_valid', 'is_delegated')
     list_filter = settings.DNS_MANAGER_ZONE_ADMIN_FILTER
-    search_fields = ['domain__name', ]
+    search_fields = ['domain__name',
+                     'addressrecord__data',
+                     'addressrecord__ip',
+                     'canonicalnamerecord__data',
+                     'canonicalnamerecord__target',
+                     'mailexchangerecord__data',
+                     'mailexchangerecord__origin',
+                     'nameserverrecord__data',
+                     'nameserverrecord__origin',
+                     'textrecord__data',
+                     'textrecord__text',
+                     'servicerecord__data',
+                     'servicerecord__target',
+                     ]
 
     def run_recipe(self, recipe):
         """ Execute the given recipe from the recipe model """
