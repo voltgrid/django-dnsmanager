@@ -2,6 +2,8 @@ import time
 import socket
 import re
 
+import dns.message
+import dns.query
 import dns.resolver
 import dns.zone
 
@@ -61,7 +63,7 @@ def validate_hostname_exists(fqdn):
 def validate_hostname_string(hostname):
     """
     :param hostname: Is hostname valid
-    :return: True, or ValidationError
+    :return: True, False, or ValidationError
     """
     # More complete validation here http://en.wikipedia.org/wiki/Hostname#Restrictions_on_valid_host_names
     if hostname == "@":
@@ -88,6 +90,20 @@ def validate_service_record_data(data):
     else:
         raise ValidationError('Service record is not valid.')
 
+
+def validate_hostname_digs(domainname):
+    # Check if any records exist for the given domainname
+    os_resolvers = dns.resolver.Resolver()
+    nameserver = os_resolvers.nameservers[0]  # Use first OS resolver for query
+    RDCLASS = 4096  # dig query
+    request = dns.message.make_query(domainname, dns.rdatatype.ANY)
+    request.flags |= dns.flags.AD  # bitwise opp
+    request.find_rrset(request.additional, dns.name.root, RDCLASS, dns.rdatatype.OPT, create=True, force_unique=True)
+    response = dns.query.udp(request, nameserver)
+    if len(response.answer) > 0:
+        return True
+    else:
+        return False
 
 class Zone(DateMixin):
     domain = models.OneToOneField('.'.join(settings.DNS_MANAGER_DOMAIN_MODEL.split('.')[-2:]))
@@ -346,7 +362,7 @@ class CanonicalNameRecord(BaseZoneRecord):
     def clean(self):
         validate_hostname_string(self.data)
         validate_hostname_string(self.target)
-        validate_hostname_exists(self.fq_target)
+        validate_hostname_digs(self.fq_target)
 
 
 class MailExchangeRecord(BaseZoneRecord):

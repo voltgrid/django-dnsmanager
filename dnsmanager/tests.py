@@ -8,7 +8,7 @@ from django.test import RequestFactory
 from model_mommy import mommy
 
 from .models import Zone, AddressRecord, CanonicalNameRecord, MailExchangeRecord, NameServerRecord, TextRecord, \
-    validate_hostname_string
+    validate_hostname_string, validate_hostname_digs
 
 from .views import ZoneListView, ZoneDetailView
 
@@ -225,6 +225,10 @@ class DomainValidationTest(TestCase):
         domain = 'foo.-bar.example.com.'
         with self.assertRaises(ValidationError):
             validate_hostname_string(domain)
+
+    def test_foo(self):
+        self.assertEquals(validate_hostname_digs('example.com'), True)
+        self.assertEquals(validate_hostname_digs('foo.example.com'), False)
 
     # TODO: Fixme
     # def test_too_long(self):
