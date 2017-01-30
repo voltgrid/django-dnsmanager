@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.models import Permission
 from django.test import TestCase
@@ -6,7 +7,8 @@ from django.test import RequestFactory
 
 from model_mommy import mommy
 
-from .models import Zone, AddressRecord, CanonicalNameRecord, MailExchangeRecord, NameServerRecord, TextRecord
+from .models import Zone, AddressRecord, CanonicalNameRecord, MailExchangeRecord, NameServerRecord, TextRecord, \
+    validate_hostname_string
 
 from .views import ZoneListView, ZoneDetailView
 
@@ -202,3 +204,30 @@ class ZoneTest(TestCase):
         view = ZoneListView.as_view()
         response = view(request)
         self.assertEqual(response.status_code, 200)
+
+
+class DomainValidationTest(TestCase):
+
+    def test_leading_underscore(self):
+        domain = '_foo.bar.example.com.'
+        self.assertEquals(validate_hostname_string(domain), True)
+
+    def test_inner_underscore(self):
+        domain = 'foo._bar.example.com.'
+        self.assertEquals(validate_hostname_string(domain), True)
+
+    def test_leading_hyphen(self):
+        domain = '-foo.bar.example.com.'
+        with self.assertRaises(ValidationError):
+            validate_hostname_string(domain)
+
+    def test_inner_hyphen(self):
+        domain = 'foo.-bar.example.com.'
+        with self.assertRaises(ValidationError):
+            validate_hostname_string(domain)
+
+    # TODO: Fixme
+    # def test_too_long(self):
+    #     domain = 'foobarbazfoobarbazfoobarbazfoobarbazfoobarbazfoobarbazfoobarbazfoobarbaz.example.com.'
+    #     with self.assertRaises(ValidationError):
+    #         validate_hostname_string(domain)
