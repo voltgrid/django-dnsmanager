@@ -3,4 +3,4 @@ dnspython
 django-reversion
 
 # Testing / Development
-model-mommy
+model-mommy==1.2.6
