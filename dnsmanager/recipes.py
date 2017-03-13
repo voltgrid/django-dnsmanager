@@ -78,7 +78,7 @@ class SPFRecipe(Recipe):
             # Remove existing SPF
             TextRecord.objects.filter(zone=self.zone, text__startswith='"v=spf1').delete()
             for spf, ttl in data:
-                TextRecord.objects.get_or_create(zone=self.zone, text=spf, ttl=ttl)
+                TextRecord.objects.get_or_create(zone=self.zone, data='@', text=spf, ttl=ttl)
 
 
 class ServiceRecipe(Recipe):
@@ -99,7 +99,7 @@ class ServiceRecipe(Recipe):
 class Office365(CnameRecipe, MxRecipe, SPFRecipe, ServiceRecipe):
 
     data_mx = [
-        ('0', 'healthbanc-com.mail.protection.outlook.com.', 3600),
+        ('0', 'mail.protection.outlook.com.', 3600),
     ]
 
     data_cname = [
