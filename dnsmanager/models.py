@@ -105,6 +105,7 @@ def validate_hostname_digs(domainname):
     else:
         return False
 
+
 class Zone(DateMixin):
     domain = models.OneToOneField('.'.join(settings.DNS_MANAGER_DOMAIN_MODEL.split('.')[-2:]))
     soa_email = models.CharField(max_length=128, default=ZONE_DEFAULTS['soa'])
@@ -170,13 +171,13 @@ class Zone(DateMixin):
     def validate(self):
         try:
             # Can't run this on clean due to relation not being saved.. need a custom method.
-            if self.nameserverrecord_set.count() < 2:
+            if self.nameserverrecords.count() < 2:
                 raise ValidationError('You must assign at least two name servers.')
-            if self.addressrecord_set.count() < 1:
+            if self.addressrecords.count() < 1:
                 raise ValidationError('You must assign at least one address record.')
             # Validate that a / cname conflict does not occur
-            for a_record in self.addressrecord_set.all():
-                if self.canonicalnamerecord_set.filter(data=a_record.data).exists():
+            for a_record in self.addressrecords.all():
+                if self.canonicalnamerecords.filter(data=a_record.data).exists():
                     raise ValidationError('Cannot have CNAME and A records with same hostname.')
         except ObjectDoesNotExist:
             # In case that related record fails to validate
@@ -249,11 +250,11 @@ class Zone(DateMixin):
         self.save()
 
         if not partial:
-            self.addressrecord_set.all().delete()
-            self.nameserverrecord_set.all().delete()
-            self.mailexchangerecord_set.all().delete()
-            self.canonicalnamerecord_set.all().delete()
-            self.textrecord_set.all().delete()
+            self.addressrecords.all().delete()
+            self.nameserverrecords.all().delete()
+            self.mailexchangerecords.all().delete()
+            self.canonicalnamerecords.all().delete()
+            self.textrecords.all().delete()
 
         for (name, ttl, rdata) in bind_zone.iterate_rdatas('A'):
             r, c = AddressRecord.objects.get_or_create(zone=self, data=str(name).lower(), ip=str(rdata))
@@ -296,7 +297,7 @@ class Zone(DateMixin):
 
 class BaseZoneRecord(DateMixin):
 
-    zone = models.ForeignKey(Zone)
+    zone = models.ForeignKey(Zone, related_name="%(class)ss")
     data = models.CharField(max_length=255, help_text="Data")
 
     ttl = models.PositiveIntegerField(blank=True, null=True)
@@ -418,6 +419,7 @@ class TextRecord(BaseZoneRecord):
 
 
 class ServiceRecord(BaseZoneRecord):
+
     priority = IntegerRangeField(min_value=0, max_value=65535, help_text="Priority")
     weight = IntegerRangeField(min_value=0, max_value=65535, help_text="Weight")
     port = IntegerRangeField(min_value=1, max_value=65535, help_text="TCP / UDP Port")

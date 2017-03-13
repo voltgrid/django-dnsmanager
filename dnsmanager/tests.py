@@ -92,9 +92,9 @@ class DNSCreationTest(TestCase):
         zone, created = Zone.objects.get_or_create(domain=domain)
         zone.update_from_text(text=data['data'])
 
-        self.assertEqual(zone.addressrecord_set.count(), 2)
-        self.assertEqual(zone.nameserverrecord_set.count(), 2)
-        self.assertEqual(zone.servicerecord_set.count(), 1)
+        self.assertEqual(zone.addressrecords.count(), 2)
+        self.assertEqual(zone.nameserverrecords.count(), 2)
+        self.assertEqual(zone.servicerecords.count(), 1)
         self.assertNotEqual(zone.serial, 2013120600)
 
 
@@ -121,8 +121,8 @@ class RecipeTest(TestCase):
         mommy.make_recipe('dnsmanager.mx_record', zone=zone, priority=10)
         # run recipe
         GoogleApps(zone)
-        self.assertEqual(zone.mailexchangerecord_set.all().count(), 5)
-        self.assertGreaterEqual(zone.canonicalnamerecord_set.all().count(), 5)
+        self.assertEqual(zone.mailexchangerecords.all().count(), 5)
+        self.assertGreaterEqual(zone.canonicalnamerecords.all().count(), 5)
 
     def test_office_365_recipe(self):
         zone = mommy.make_recipe('dnsmanager.zone')
@@ -130,10 +130,10 @@ class RecipeTest(TestCase):
         mommy.make_recipe('dnsmanager.mx_record', zone=zone, priority=10)
         # run recipe
         Office365(zone)
-        self.assertEqual(zone.mailexchangerecord_set.all().count(), 1)
-        self.assertEqual(zone.canonicalnamerecord_set.all().count(), 4)
-        self.assertEqual(zone.textrecord_set.all().count(), 1)
-        self.assertEqual(zone.servicerecord_set.all().count(), 2)
+        self.assertEqual(zone.mailexchangerecords.all().count(), 1)
+        self.assertEqual(zone.canonicalnamerecords.all().count(), 4)
+        self.assertEqual(zone.textrecords.all().count(), 1)
+        self.assertEqual(zone.servicerecords.all().count(), 2)
 
     def test_remove_record_ttl_email(self):
         zone = mommy.make_recipe('dnsmanager.zone')
@@ -146,15 +146,15 @@ class RecipeTest(TestCase):
         # run recipe
         RemovePerRecordTtls(zone)
         # check results
-        for obj in zone.addressrecord_set.all():
+        for obj in zone.addressrecords.all():
             self.assertEqual(obj.ttl, None)
-        for obj in zone.canonicalnamerecord_set.all():
+        for obj in zone.canonicalnamerecords.all():
             self.assertEqual(obj.ttl, None)
-        for obj in zone.mailexchangerecord_set.all():
+        for obj in zone.mailexchangerecords.all():
             self.assertEqual(obj.ttl, None)
-        for obj in zone.nameserverrecord_set.all():
+        for obj in zone.nameserverrecords.all():
             self.assertEqual(obj.ttl, None)
-        for obj in zone.textrecord_set.all():
+        for obj in zone.textrecords.all():
             self.assertEqual(obj.ttl, None)
 
     def test_reset_zone_defaults(self):

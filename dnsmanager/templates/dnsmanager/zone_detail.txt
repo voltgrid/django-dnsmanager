@@ -1,6 +1,6 @@
 $ORIGIN .
 $TTL {{ object.ttl }}
-{{ object.domain }}             IN SOA {% with object.nameserverrecord_set.all|first as soa_ns %}{{ soa_ns.data }}{% endwith %} {{ object.rname }} (
+{{ object.domain }}             IN SOA {% with object.nameserverrecords.all|first as soa_ns %}{{ soa_ns.data }}{% endwith %} {{ object.rname }} (
                                 {{ object.serial }} ; serial
                                 {{ object.refresh }} ; refresh
                                 {{ object.retry }} ; retry
@@ -11,31 +11,31 @@ $TTL {{ object.ttl }}
 $ORIGIN {{ object.domain }}.
 
 ; Name Server Records
-{% for object in object.nameserverrecord_set.all %}
+{% for object in object.nameserverrecords.all %}
 {{ object.origin }}    {{ object.ttlx }}    IN    NS    {{ object.data }}
 {% endfor %}
 
 ; Address Records
-{% for object in object.addressrecord_set.all %}
+{% for object in object.addressrecords.all %}
 {{ object.data }}    {{ object.ttlx }}    IN    A    {{ object.ip }}
 {% endfor %}
 
 ; Canonical Name Records
-{% for object in object.canonicalnamerecord_set.all %}
+{% for object in object.canonicalnamerecords.all %}
 {{ object.data }}    {{ object.ttlx }}    IN    CNAME    {{ object.target }}
 {% endfor %}
 
 ; Mail Exchange Records
-{% for object in object.mailexchangerecord_set.all %}
+{% for object in object.mailexchangerecords.all %}
 {{ object.origin }}    {{ object.ttlx }}    IN    MX    {{ object.priority }} {{ object.data }}
 {% endfor %}
 
 ; TXT Records
-{% for object in object.textrecord_set.all %}
+{% for object in object.textrecords.all %}
 {{ object.data }}    {{ object.ttlx }}    IN    TXT    {{ object.text|safe }}
 {% endfor %}
 
 ; SRV Records
-{% for object in object.servicerecord_set.all %}
+{% for object in object.servicerecords.all %}
 {{ object.data }}    {{ object.ttlx }}    IN    SRV {{ object.priority }} {{ object.weight }} {{ object.port }}    {{ object.target }}
 {% endfor %}
