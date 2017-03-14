@@ -40,7 +40,7 @@ setup(
         'django>=1.8',
         'django<1.9',
         'dnspython',
-        'django-reversion=1.9.3'
+        'django-reversion==1.9.3'
     ],
     tests_require=['coveralls', 'model_mommy'],
     test_suite='test_app.runtests.runtests',
