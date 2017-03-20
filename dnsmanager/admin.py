@@ -50,18 +50,18 @@ class ZoneAdmin(reversion.VersionAdmin):
     list_display = ('__unicode__', 'is_valid', 'is_delegated')
     list_filter = settings.DNS_MANAGER_ZONE_ADMIN_FILTER
     search_fields = ['domain__name',
-                     'addressrecord__data',
-                     'addressrecord__ip',
-                     'canonicalnamerecord__data',
-                     'canonicalnamerecord__target',
-                     'mailexchangerecord__data',
-                     'mailexchangerecord__origin',
-                     'nameserverrecord__data',
-                     'nameserverrecord__origin',
-                     'textrecord__data',
-                     'textrecord__text',
-                     'servicerecord__data',
-                     'servicerecord__target',
+                     'addressrecords__data',
+                     'addressrecords__ip',
+                     'canonicalnamerecords__data',
+                     'canonicalnamerecords__target',
+                     'mailexchangerecords__data',
+                     'mailexchangerecords__origin',
+                     'nameserverrecords__data',
+                     'nameserverrecords__origin',
+                     'textrecords__data',
+                     'textrecords__text',
+                     'servicerecords__data',
+                     'servicerecords__target',
                      ]
 
     def run_recipe(self, recipe):
